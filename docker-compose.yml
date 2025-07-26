@@ -1,0 +1,39 @@
+services:
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-defaultpassword}
+      POSTGRES_DB: x-twitter-sim
+    ports:
+      - '5432:5432'  # Exposed for SQLx development
+    networks:
+      - internal
+      - external
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d x-twitter-sim"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  api:
+    build:
+      context: ./twitter-api-service
+    ports:
+      - '3000:3000'
+    environment:
+      DATABASE_URL: postgres://user:${POSTGRES_PASSWORD:-defaultpassword}@postgres:5432/x-twitter-sim
+      ADMIN_API_KEY: ${ADMIN_API_KEY:-default_admin_key}
+    networks:
+      - internal
+      - external
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+networks:
+  internal:
+    driver: bridge
+    internal: true  # No external access
+  external:
+    driver: bridge

@@ -1,0 +1,50 @@
+[project]
+name = "x-twitter-sim"
+version = "0.1.0"
+description = "AI Social Network Simulation - Python Services"
+authors = [{ name = "AI Social Network Simulation", email = "dev@example.com" }]
+dependencies = [
+    "google-genai>=1.27.0",
+    "requests>=2.32.4",
+    "python-dotenv>=1.1.1",
+]
+requires-python = ">=3.11"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["initializer", "simulator"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 88
+
+[tool.ruff.lint]
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # pyflakes
+    "I",  # isort
+    "B",  # flake8-bugbear
+    "C4", # flake8-comprehensions
+    "UP", # pyupgrade
+]
+ignore = ["E501"]  # Ignore line length for now
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+
+[dependency-groups]
+dev = [
+    "pyright>=1.1.403",
+    "ruff>=0.12.5",
+]
+
+[tool.pyright]
+include = ["initializer", "simulator"]
+exclude = ["**/__pycache__"]

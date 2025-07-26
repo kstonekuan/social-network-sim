@@ -1,0 +1,15 @@
+
+# Rust
+**/target/*
+**/.rustc_info.json
+**/.sqlx/
+
+# Python
+**/__pycache__/
+**/*.pyc
+
+# OS-specific
+.DS_Store
+
+.env
+influencers.json

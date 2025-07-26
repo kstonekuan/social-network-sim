@@ -1,0 +1,20 @@
+[package]
+name = "twitter-api-service"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+axum = "0.8.4"
+tokio = { version = "1.46.1", features = ["full"] }
+serde = { version = "1.0.219", features = ["derive"] }
+sqlx = { version = "0.8.6", features = [
+    "runtime-tokio-rustls",
+    "postgres",
+    "uuid",
+    "chrono",
+    "json",
+] }
+dotenvy = "0.15.7"
+tracing = "0.1.41"
+tracing-subscriber = { version = "0.3.19", features = ["env-filter"] }
+chrono = { version = "0.4", features = ["serde"] }
