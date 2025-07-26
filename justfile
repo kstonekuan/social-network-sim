@@ -5,7 +5,7 @@
 default: check
 
 # Run all checks (format, lint, typecheck, build)
-check: format db-prepare lint typecheck build test
+check: format db-prepare lint typecheck build test viz-check
 
 # Format all code
 format:
@@ -13,6 +13,8 @@ format:
     uv run ruff format initializer simulator
     @echo "🎨 Formatting Rust code..."
     cd twitter-api-service && cargo fmt
+    @echo "🎨 Formatting TypeScript/Svelte code..."
+    pnpm lint:fix
 
 # Lint all code
 lint:
@@ -20,6 +22,8 @@ lint:
     uv run ruff check initializer simulator
     @echo "🔍 Linting Rust code..."
     cd twitter-api-service && SQLX_OFFLINE=true cargo clippy -- -D warnings
+    @echo "🔍 Linting TypeScript/Svelte code..."
+    pnpm lint
 
 # Type check all code
 typecheck:
@@ -27,6 +31,8 @@ typecheck:
     uv run pyright
     @echo "🔬 Type checking Rust code..."
     cd twitter-api-service && SQLX_OFFLINE=true cargo check
+    @echo "🔬 Type checking TypeScript/Svelte code..."
+    pnpm check
 
 # Build all projects
 build:
@@ -34,6 +40,8 @@ build:
     uv sync
     @echo "🔨 Building Rust project..."
     cd twitter-api-service && SQLX_OFFLINE=true cargo build
+    @echo "🔨 Building visualizer..."
+    pnpm build
 
 # Run tests
 test:
@@ -74,11 +82,13 @@ clean:
     rm -rf .venv/__pycache__
     find . -name "*.pyc" -delete
     find . -name "__pycache__" -type d -exec rm -rf {} +
+    rm -rf dist node_modules
 
 # Initialize project (first time setup)
 init:
     @echo "🚀 Initializing project..."
     uv sync
+    pnpm install
     just docker-up
     sleep 10
     just db-init
@@ -94,11 +104,37 @@ run-sim:
     @echo "🎭 Running simulator..."
     uv run python simulator/main.py
 
+# Visualizer operations
+viz-dev:
+    @echo "🎨 Starting visualizer dev server..."
+    pnpm dev
+
+viz-build:
+    @echo "🔨 Building visualizer for production..."
+    pnpm build
+
+viz-preview:
+    @echo "👀 Previewing visualizer build..."
+    pnpm preview
+
+viz-check:
+    @echo "✅ Running visualizer checks..."
+    pnpm check
+
+viz-lint:
+    @echo "🔍 Linting visualizer..."
+    pnpm lint
+
+viz-install:
+    @echo "📦 Installing visualizer dependencies..."
+    pnpm install
+
 # Quick fixes
 fix:
     @echo "🔧 Auto-fixing issues..."
     uv run ruff check --fix initializer simulator
     cd twitter-api-service && cargo fmt
+    pnpm lint:fix
     just typecheck
 
 # Show help
@@ -127,3 +163,11 @@ help:
     @echo "  run-init   - Run initializer service"
     @echo "  run-sim    - Run simulator service"
     @echo "  clean      - Clean build artifacts"
+    @echo ""
+    @echo "Visualizer:"
+    @echo "  viz-dev    - Start visualizer development server"
+    @echo "  viz-build  - Build visualizer for production"
+    @echo "  viz-preview - Preview visualizer build"
+    @echo "  viz-check  - Run visualizer type checking"
+    @echo "  viz-lint   - Lint visualizer code"
+    @echo "  viz-install - Install visualizer dependencies"

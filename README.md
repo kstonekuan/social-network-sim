@@ -1,171 +1,107 @@
-# AI Social Network Simulation
+# X-Twitter Simulation
 
-This project is a social media simulation powered by AI agents. The system is divided into three distinct, decoupled services that communicate via API calls.
+This project is a full-stack simulation of a social media platform like X (formerly Twitter). It includes a backend API, a frontend visualizer, and Python scripts to simulate user activity and generate data.
+
+## Features
+
+*   **Realistic Simulation:** Simulates user interactions like posting, following, and viewing timelines.
+*   **Influencer Dynamics:** Models the behavior of influencers and their impact on the network.
+*   **Data Visualization:** A Svelte-based frontend to visualize the social network graph and user activity in real-time.
+*   **Containerized Services:** Uses Docker and Docker Compose for easy setup and consistent development environments.
+*   **Comprehensive Tooling:** Leverages `just` for streamlined command execution for tasks like building, testing, and code formatting.
 
 ## Architecture
 
-The system consists of three independent components:
+The project is composed of several key components:
 
-1. **The Twitter API Service (Rust):** A high-performance, backend-only service that acts as the single source of truth for the state of the social network.
-2. **The Initializer Service (Python):** A one-time script responsible for generating the static profiles of the digital twin agents using the Gemini API.
-3. **The Agent Simulator (Python):** The main simulation engine that controls the agents' actions based on their profiles.
+*   **`twitter-api-service`**: A backend API built with Rust, Axum, and SQLx, responsible for handling all data persistence and business logic.
+*   **`visualizer`**: A frontend application built with Svelte and Vite that consumes the backend API to display the simulation.
+*   **`initializer`**: A Python script to set up the initial state of the database, creating users and influencers.
+*   **`simulator`**: A Python script that runs the simulation by generating user actions (posts, follows, etc.) against the API.
+*   **`PostgreSQL`**: The database used to store all application data, managed via Docker.
 
-## Quick Start
+## Technology Stack
 
-### Prerequisites
+*   **Backend:** Rust, Axum, Tokio, SQLx
+*   **Frontend:** Svelte, TypeScript, Vite, Tailwind CSS
+*   **Simulation:** Python, Pydantic, httpx
+*   **Database:** PostgreSQL
+*   **Build/Automation:** Just, uv, pnpm
+*   **Containerization:** Docker, Docker Compose
 
-- Docker and Docker Compose
-- Python 3.11+ with `uv` package manager
-- Gemini API key from Google AI Studio
+## Prerequisites
 
-### 1. Start the Backend Services
+Before you begin, ensure you have the following installed:
 
-```bash
-# Start PostgreSQL database and Rust API service
-docker compose up --build
-```
+*   [Docker](https://www.docker.com/get-started)
+*   [just](https://github.com/casey/just)
+*   [pnpm](https://pnpm.io/installation)
+*   [uv](https://github.com/astral-sh/uv) (Python package manager)
 
-This will start:
-- PostgreSQL database (internal network only)
-- Rust API service on port 3000
+## Getting Started
 
-### 2. Configure Environment Variables
+1.  **Clone the repository:**
+    ```bash
+    git clone <repository-url>
+    cd x-twitter-sim
+    ```
 
-```bash
-# Copy and edit the environment file
-cp .env.example .env
-# Edit .env and add your GEMINI_API_KEY
-```
+2.  **Create the environment file:**
+    Copy the example `.env.example` to `.env` and fill in the required values, such as your API keys and database connection string.
+    ```bash
+    cp .env.example .env
+    ```
 
-### 3. Set up Python Environment
+3.  **Run the initialization script:**
+    This command will install all dependencies (Python and Node.js), start the Docker containers, and initialize the database schema.
+    ```bash
+    just init
+    ```
+    *Note: This might take a few minutes on the first run.*
 
-```bash
-# Install all dependencies for both Python services
-uv sync
-```
+## Development Workflow
 
-### 4. Initialize Agent Profiles
+Once the initial setup is complete, you can use the following commands to run and manage the application.
 
-```bash
-# Generate AI agent profiles using Gemini
-uv run python initializer/main.py
-```
+*   **Start all services:**
+    This will start the database and backend API in the background.
+    ```bash
+    just docker-up
+    ```
 
-This will:
-- Generate AI agent profiles for famous people using Gemini
-- Store them in the database via the API service
+*   **Run the database initializer:**
+    This populates the database with initial users and influencers.
+    ```bash
+    just run-init
+    ```
 
-### 5. Run the Simulation
+*   **Run the simulation:**
+    This starts the main simulation script, which will generate activity on the platform.
+    ```bash
+    just run-sim
+    ```
 
-```bash
-# Run the simulation engine
-uv run python simulator/main.py
-```
+*   **Start the frontend visualizer:**
+    This will start the Svelte development server.
+    ```bash
+    just viz-dev
+    ```
+    You can now view the visualizer at `http://localhost:5173`.
 
-This will:
-- Load agent profiles from the API
-- Run a simulation where agents post, like, and follow each other
-- Show real-time activity logs
+## Available Commands
 
-## API Endpoints
+The `justfile` provides a convenient way to run common tasks. Here are some of the most useful commands:
 
-### Admin Endpoints (Protected)
-- `POST /api/v1/admin/agents` - Create agent profile
-- `POST /api/v1/admin/reset` - Reset simulation data
+| Command         | Description                                           |
+| --------------- | ----------------------------------------------------- |
+| `just check`    | Run all checks (format, lint, typecheck, build, test) |
+| `just format`   | Format all code (Python, Rust, TS/Svelte)             |
+| `just lint`     | Lint all code                                         |
+| `just typecheck`| Type check all code                                   |
+| `just build`    | Build all projects                                    |
+| `just test`     | Run backend tests                                     |
+| `just dev`      | Set up the full development environment               |
+| `just docker-down`| Stop all Docker services                              |
+| `just clean`    | Clean all build artifacts                             |
 
-### Public Endpoints
-- `GET /api/v1/agents` - List all agents
-- `GET /api/v1/agents/{id}` - Get single agent
-- `POST /api/v1/posts` - Create post
-- `GET /api/v1/posts/feed` - Get global feed (recent posts from all agents)
-- `POST /api/v1/posts/{id}/like` - Like post
-- `POST /api/v1/posts/{id}/comments` - Create comment on post
-- `GET /api/v1/posts/{id}/comments` - Get comments for post
-- `POST /api/v1/posts/{id}/repost` - Repost content
-- `POST /api/v1/agents/{id}/follow` - Follow agent
-- `GET /api/v1/agents/{id}/timeline` - Get timeline
-
-## Configuration
-
-### Environment Variables (single .env file at root)
-
-- `GEMINI_API_KEY` - Your Gemini API key from Google AI Studio
-- `ADMIN_API_KEY` - Secret key for admin endpoints (default: super_secret_admin_key_123)
-- `API_BASE_URL` - API service URL (default: http://localhost:3000)
-- `SIMULATION_TICKS` - Number of simulation steps (default: 100)
-- `TICK_DURATION_SECONDS` - Time between simulation steps (default: 5)
-
-## Development
-
-### Rust API Service
-
-```bash
-cd twitter-api-service
-
-# Set up SQLx offline mode for IDE support
-export SQLX_OFFLINE=true
-
-# Build and run
-cargo build
-cargo run
-
-# Generate SQLx offline data (when database schema changes)
-cargo sqlx prepare
-```
-
-### Python Services
-
-```bash
-# Install dependencies
-uv sync
-
-# Type checking
-uv run pyright
-
-# Format and lint code
-uv run ruff format initializer simulator
-uv run ruff check initializer simulator
-
-# Run services
-uv run python initializer/main.py
-uv run python simulator/main.py
-```
-
-## Network Security
-
-The Docker setup isolates the database from external access:
-- PostgreSQL is only accessible to the API service via internal Docker network
-- Only the API service (port 3000) is exposed to external connections
-- External services must go through the REST API to access data
-
-## Architecture Details
-
-The simulation works as follows:
-
-1. **Initialization Phase**: The initializer creates realistic agent profiles based on famous people, using Gemini to generate personalities, interests, and behavioral rules.
-
-2. **Simulation Phase**: The simulator runs in ticks, where each agent has a probability of performing actions (posting, liking, following) based on their personality and posting frequency.
-
-3. **State Management**: All social network state (posts, likes, follows) is stored in PostgreSQL and managed by the Rust API service.
-
-The services are completely decoupled - they only communicate through the REST API, making the system modular and scalable.
-
-## Project Structure
-
-```
-x-twitter-sim/
-├── .env.example              # Environment configuration template
-├── pyproject.toml            # Python dependencies and tooling config
-├── docker-compose.yml        # Container orchestration
-├── initializer/
-│   ├── main.py              # Agent profile generator
-│   └── influencers.json     # List of people to create agents for
-├── simulator/
-│   └── main.py              # Simulation engine
-├── twitter-api-service/
-│   ├── src/                 # Rust source code
-│   ├── migrations/          # Database schema
-│   ├── .sqlx/              # SQLx offline query data
-│   └── Dockerfile          # API service container
-└── README.md
-```
+For a full list of commands, run `just help`.
