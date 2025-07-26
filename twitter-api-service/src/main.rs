@@ -14,19 +14,19 @@ mod auth_middleware;
 #[tokio::main]
 async fn main() {
     tracing_subscriber::fmt::init();
-    
+
     println!("Starting Twitter API Service...");
-    
+
     dotenv().ok();
     println!("Environment loaded");
 
     let database_url = match env::var("DATABASE_URL") {
         Ok(url) => {
-            println!("Database URL: {}", url);
+            println!("Database URL: {url}");
             url
         }
         Err(e) => {
-            eprintln!("DATABASE_URL must be set: {}", e);
+            eprintln!("DATABASE_URL must be set: {e}");
             std::process::exit(1);
         }
     };
@@ -42,13 +42,13 @@ async fn main() {
             pool
         }
         Err(e) => {
-            eprintln!("Failed to create database pool: {}", e);
+            eprintln!("Failed to create database pool: {e}");
             std::process::exit(1);
         }
     };
 
     println!("Setting up routes...");
-    
+
     // Admin routes with authentication
     let admin_routes = Router::new()
         .route("/api/v1/admin/agents", post(api::admin::create_agent))
@@ -103,14 +103,14 @@ async fn main() {
             listener
         }
         Err(e) => {
-            eprintln!("Failed to bind to port 3000: {}", e);
+            eprintln!("Failed to bind to port 3000: {e}");
             std::process::exit(1);
         }
     };
-    
+
     println!("Server ready to accept connections");
     if let Err(e) = axum::serve(listener, app).await {
-        eprintln!("Server error: {}", e);
+        eprintln!("Server error: {e}");
         std::process::exit(1);
     }
 }
