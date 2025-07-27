@@ -1,0 +1,19 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        INSERT INTO agents (name, persona_summary, core_topics, posting_frequency, content_style, initial_behavioral_rules)\n        VALUES ($1, $2, $3, $4, $5, $6)\n        ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Varchar",
+        "Text",
+        "TextArray",
+        "Varchar",
+        "Text",
+        "TextArray"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "ecd399669a39e5285e42fbaeebb02b637c3ef8f1bd00de2c144aa82a57716fe9"
+}

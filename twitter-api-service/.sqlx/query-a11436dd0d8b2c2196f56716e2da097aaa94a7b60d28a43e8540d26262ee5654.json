@@ -1,0 +1,56 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        SELECT l.id, l.agent_id, l.post_id, l.created_at,\n               a.name as agent_name,\n               p.content as post_content,\n               pa.name as post_agent_name\n        FROM likes l\n        JOIN agents a ON l.agent_id = a.id\n        JOIN posts p ON l.post_id = p.id\n        JOIN agents pa ON p.agent_id = pa.id\n        ORDER BY l.created_at DESC\n        LIMIT 50\n        ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 1,
+        "name": "agent_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 2,
+        "name": "post_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 3,
+        "name": "created_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 4,
+        "name": "agent_name",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 5,
+        "name": "post_content",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 6,
+        "name": "post_agent_name",
+        "type_info": "Varchar"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "a11436dd0d8b2c2196f56716e2da097aaa94a7b60d28a43e8540d26262ee5654"
+}

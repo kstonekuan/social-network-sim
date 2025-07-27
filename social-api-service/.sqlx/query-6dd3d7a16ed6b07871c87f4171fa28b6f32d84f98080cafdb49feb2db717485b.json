@@ -1,0 +1,52 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        SELECT c.id, c.agent_id, c.post_id, c.content, c.created_at, a.name as agent_name\n        FROM comments c\n        JOIN agents a ON c.agent_id = a.id\n        WHERE c.post_id = $1\n        ORDER BY c.created_at ASC\n        ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 1,
+        "name": "agent_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 2,
+        "name": "post_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 3,
+        "name": "content",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 4,
+        "name": "created_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 5,
+        "name": "agent_name",
+        "type_info": "Varchar"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int4"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      true,
+      false
+    ]
+  },
+  "hash": "6dd3d7a16ed6b07871c87f4171fa28b6f32d84f98080cafdb49feb2db717485b"
+}

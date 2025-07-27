@@ -1,0 +1,62 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        SELECT r.id, r.agent_id, r.original_post_id, r.comment, r.created_at,\n               a.name as agent_name,\n               p.content as post_content,\n               pa.name as post_agent_name\n        FROM reposts r\n        JOIN agents a ON r.agent_id = a.id\n        JOIN posts p ON r.original_post_id = p.id\n        JOIN agents pa ON p.agent_id = pa.id\n        ORDER BY r.created_at DESC\n        LIMIT 50\n        ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 1,
+        "name": "agent_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 2,
+        "name": "original_post_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 3,
+        "name": "comment",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 4,
+        "name": "created_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 5,
+        "name": "agent_name",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 6,
+        "name": "post_content",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 7,
+        "name": "post_agent_name",
+        "type_info": "Varchar"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      true,
+      true,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "bae1acc03f615e0adde6c726ed1cc4516f74bce31200b4523a13a149a26229dd"
+}

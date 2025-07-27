@@ -1,0 +1,12 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "TRUNCATE posts, likes, followers, comments, reposts",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": []
+  },
+  "hash": "9d2df0886d0b921039965e469903ff5eeca05b285d94b84bcec8bf73f9424150"
+}
