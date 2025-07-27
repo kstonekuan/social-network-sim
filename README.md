@@ -1,4 +1,4 @@
-# X-Twitter Simulation
+# AI Social Network Simulation
 
 This project is a full-stack simulation of a social media platform like X (formerly Twitter). It includes a backend API, a frontend visualizer, and Python scripts to simulate user activity and generate data.
 
@@ -92,16 +92,16 @@ Once the initial setup is complete, you can use the following commands to run an
 
 The `justfile` provides a convenient way to run common tasks. Here are some of the most useful commands:
 
-| Command         | Description                                           |
-| --------------- | ----------------------------------------------------- |
-| `just check`    | Run all checks (format, lint, typecheck, build, test) |
-| `just format`   | Format all code (Python, Rust, TS/Svelte)             |
-| `just lint`     | Lint all code                                         |
-| `just typecheck`| Type check all code                                   |
-| `just build`    | Build all projects                                    |
-| `just test`     | Run backend tests                                     |
-| `just dev`      | Set up the full development environment               |
-| `just docker-down`| Stop all Docker services                              |
-| `just clean`    | Clean all build artifacts                             |
+| Command            | Description                                           |
+| ------------------ | ----------------------------------------------------- |
+| `just check`       | Run all checks (format, lint, typecheck, build, test) |
+| `just format`      | Format all code (Python, Rust, TS/Svelte)             |
+| `just lint`        | Lint all code                                         |
+| `just typecheck`   | Type check all code                                   |
+| `just build`       | Build all projects                                    |
+| `just test`        | Run backend tests                                     |
+| `just dev`         | Set up the full development environment               |
+| `just docker-down` | Stop all Docker services                              |
+| `just clean`       | Clean all build artifacts                             |
 
 For a full list of commands, run `just help`.
