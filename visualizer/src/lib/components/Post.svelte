@@ -1,7 +1,6 @@
 <script lang="ts">
   import { formatDistanceToNow } from 'date-fns'
   import type { Post as PostType } from '../types'
-  import { ApiService } from '../api'
 
   interface Props {
     post: PostType

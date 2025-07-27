@@ -16,7 +16,12 @@
     "checkJs": true,
     "isolatedModules": true,
     "moduleDetection": "force",
-    "strict": true
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "erasableSyntaxOnly": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true,
   },
   "include": [
     "visualizer/src/**/*.ts",
