@@ -176,7 +176,25 @@ Return ONLY the JSON object, no other text.
             logger.error(f"Network error resetting simulation: {e}")
             return False
 
-    def run(self):
+    def get_existing_agents(self) -> dict[str, Any]:
+        """Get existing agents from the API."""
+        try:
+            url = f"{self.api_base_url}/api/v1/agents"
+            response = requests.get(url)
+            
+            if response.status_code == 200:
+                agents = response.json()
+                # Create a mapping of agent names to their data
+                return {agent['name']: agent for agent in agents}
+            else:
+                logger.error(f"Failed to fetch agents: {response.status_code}")
+                return {}
+                
+        except requests.RequestException as e:
+            logger.error(f"Network error fetching agents: {e}")
+            return {}
+
+    def run(self, force_reset: bool = False):
         """Main execution method."""
         logger.info("Starting AI Social Network Initializer")
 
@@ -186,10 +204,26 @@ Return ONLY the JSON object, no other text.
             logger.error("No influencers loaded. Exiting.")
             sys.exit(1)
 
-        # Reset simulation first
-        logger.info("Resetting simulation...")
-        if not self.reset_simulation():
-            logger.warning("Failed to reset simulation, continuing anyway...")
+        # Check for existing agents
+        existing_agents = self.get_existing_agents()
+        if existing_agents and not force_reset:
+            logger.info(f"Found {len(existing_agents)} existing agents")
+            # Filter out influencers that already exist
+            influencers = [name for name in influencers if name not in existing_agents]
+            if not influencers:
+                logger.info("All influencers already exist. Nothing to do.")
+                return
+            logger.info(f"Will create {len(influencers)} new agents")
+        elif force_reset:
+            # Reset simulation if forced
+            logger.info("Force reset requested. Resetting simulation...")
+            if not self.reset_simulation():
+                logger.warning("Failed to reset simulation, continuing anyway...")
+        else:
+            # No existing agents, safe to reset
+            logger.info("No existing agents found. Resetting simulation...")
+            if not self.reset_simulation():
+                logger.warning("Failed to reset simulation, continuing anyway...")
 
         # Generate and create agents
         successful_creations = 0
@@ -248,9 +282,16 @@ Return ONLY the JSON object, no other text.
 
 
 def main():
+    import argparse
+    
+    parser = argparse.ArgumentParser(description="Initialize AI agents for social network simulation")
+    parser.add_argument("--force-reset", action="store_true", 
+                       help="Force reset simulation data before creating agents")
+    args = parser.parse_args()
+    
     try:
         initializer = InitializerService()
-        initializer.run()
+        initializer.run(force_reset=args.force_reset)
     except KeyboardInterrupt:
         logger.info("Interrupted by user")
         sys.exit(1)
