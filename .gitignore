@@ -2,7 +2,6 @@
 # Rust
 **/target/*
 **/.rustc_info.json
-**/.sqlx/
 
 # Python
 **/__pycache__/

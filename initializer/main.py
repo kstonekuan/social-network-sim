@@ -200,12 +200,17 @@ Return ONLY the JSON object, no other text.
                 try:
                     # Update progress bar description
                     pbar.set_description(f"Creating {influencer}")
-                    
+
                     # Generate profile
                     profile = self.generate_agent_profile(influencer)
                     if not profile:
                         failed_creations += 1
-                        pbar.set_postfix({"Success": successful_creations, "Failed": failed_creations})
+                        pbar.set_postfix(
+                            {
+                                "Success": successful_creations,
+                                "Failed": failed_creations,
+                            }
+                        )
                         pbar.update(1)
                         continue
 
@@ -214,9 +219,11 @@ Return ONLY the JSON object, no other text.
                         successful_creations += 1
                     else:
                         failed_creations += 1
-                    
+
                     # Update progress bar with current stats
-                    pbar.set_postfix({"Success": successful_creations, "Failed": failed_creations})
+                    pbar.set_postfix(
+                        {"Success": successful_creations, "Failed": failed_creations}
+                    )
                     pbar.update(1)
 
                     # Rate limiting - wait between requests
@@ -225,7 +232,9 @@ Return ONLY the JSON object, no other text.
                 except Exception as e:
                     logger.error(f"Unexpected error processing {influencer}: {e}")
                     failed_creations += 1
-                    pbar.set_postfix({"Success": successful_creations, "Failed": failed_creations})
+                    pbar.set_postfix(
+                        {"Success": successful_creations, "Failed": failed_creations}
+                    )
                     pbar.update(1)
 
         # Summary

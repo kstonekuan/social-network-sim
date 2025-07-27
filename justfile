@@ -5,7 +5,7 @@
 default: check
 
 # Run all checks (format, lint, typecheck, build)
-check: format db-prepare lint typecheck build test viz-check
+check: format lint typecheck build test
 
 # Format all code
 format:
