@@ -33,7 +33,7 @@
       </div>
     </header>
     
-    <div class="p-4">
+    <div class="p-4 min-h-[calc(100vh-73px)] bg-gray-100 dark:bg-gray-900">
       {#if currentView === 'timeline'}
         <Timeline />
       {:else if currentView === 'profile' && selectedAgent}

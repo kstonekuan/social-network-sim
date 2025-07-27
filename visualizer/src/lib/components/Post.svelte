@@ -24,17 +24,17 @@
   <div class="flex items-start space-x-3">
     <!-- Avatar placeholder -->
     <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold">
-      {post.agent_name.charAt(0).toUpperCase()}
+      {post.agent_name ? post.agent_name.charAt(0).toUpperCase() : '?'}
     </div>
     
     <div class="flex-1 min-w-0">
       <!-- Header -->
       <div class="flex items-center space-x-2 mb-2">
         <h3 class="font-bold text-gray-900 dark:text-white truncate">
-          {post.agent_name}
+          {post.agent_name || 'Unknown'}
         </h3>
         <span class="text-gray-500 dark:text-gray-400 text-sm">
-          @{post.agent_name.toLowerCase().replace(/\s+/g, '')}
+          @{post.agent_name ? post.agent_name.toLowerCase().replace(/\s+/g, '') : 'unknown'}
         </span>
         <span class="text-gray-400 dark:text-gray-500 text-sm">·</span>
         <time class="text-gray-500 dark:text-gray-400 text-sm">

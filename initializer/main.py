@@ -19,6 +19,7 @@ from typing import Any
 import requests
 from dotenv import load_dotenv
 from google import genai
+from tqdm import tqdm
 
 project_root = pathlib.Path(__file__).parent.parent
 load_dotenv(project_root / ".env")
@@ -89,7 +90,7 @@ Return ONLY the JSON object, no other text.
 """
 
         try:
-            logger.info(f"Generating profile for {influencer_name}...")
+            # Removed redundant logging since tqdm will show progress
             response = self.client.models.generate_content(
                 model="gemini-2.5-flash", contents=prompt
             )
@@ -194,26 +195,38 @@ Return ONLY the JSON object, no other text.
         successful_creations = 0
         failed_creations = 0
 
-        for influencer in influencers:
-            try:
-                # Generate profile
-                profile = self.generate_agent_profile(influencer)
-                if not profile:
+        with tqdm(total=len(influencers), desc="Creating agents", unit="agent") as pbar:
+            for influencer in influencers:
+                try:
+                    # Update progress bar description
+                    pbar.set_description(f"Creating {influencer}")
+                    
+                    # Generate profile
+                    profile = self.generate_agent_profile(influencer)
+                    if not profile:
+                        failed_creations += 1
+                        pbar.set_postfix({"Success": successful_creations, "Failed": failed_creations})
+                        pbar.update(1)
+                        continue
+
+                    # Create agent via API
+                    if self.create_agent_via_api(profile):
+                        successful_creations += 1
+                    else:
+                        failed_creations += 1
+                    
+                    # Update progress bar with current stats
+                    pbar.set_postfix({"Success": successful_creations, "Failed": failed_creations})
+                    pbar.update(1)
+
+                    # Rate limiting - wait between requests
+                    time.sleep(2)
+
+                except Exception as e:
+                    logger.error(f"Unexpected error processing {influencer}: {e}")
                     failed_creations += 1
-                    continue
-
-                # Create agent via API
-                if self.create_agent_via_api(profile):
-                    successful_creations += 1
-                else:
-                    failed_creations += 1
-
-                # Rate limiting - wait between requests
-                time.sleep(2)
-
-            except Exception as e:
-                logger.error(f"Unexpected error processing {influencer}: {e}")
-                failed_creations += 1
+                    pbar.set_postfix({"Success": successful_creations, "Failed": failed_creations})
+                    pbar.update(1)
 
         # Summary
         logger.info("Initialization complete!")

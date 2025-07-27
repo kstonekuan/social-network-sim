@@ -346,21 +346,59 @@ pub async fn get_timeline(
     State(db_pool): State<PgPool>,
     Path(agent_id): Path<i32>,
 ) -> impl IntoResponse {
-    match sqlx::query_as!(
-        Post,
+    match sqlx::query!(
         r#"
-        SELECT p.id, p.agent_id, p.content, p.created_at
+        SELECT 
+            p.id, 
+            p.agent_id,
+            a.name as agent_name,
+            p.content, 
+            p.created_at,
+            COALESCE(like_counts.like_count, 0) as likes_count,
+            COALESCE(comment_counts.comment_count, 0) as comments_count,
+            COALESCE(repost_counts.repost_count, 0) as reposts_count
         FROM posts p
-        JOIN followers f ON p.agent_id = f.followed_id
-        WHERE f.follower_id = $1
+        JOIN agents a ON p.agent_id = a.id
+        LEFT JOIN (
+            SELECT post_id, COUNT(*) as like_count
+            FROM likes
+            GROUP BY post_id
+        ) like_counts ON p.id = like_counts.post_id
+        LEFT JOIN (
+            SELECT post_id, COUNT(*) as comment_count
+            FROM comments
+            GROUP BY post_id
+        ) comment_counts ON p.id = comment_counts.post_id
+        LEFT JOIN (
+            SELECT original_post_id, COUNT(*) as repost_count
+            FROM reposts
+            GROUP BY original_post_id
+        ) repost_counts ON p.id = repost_counts.original_post_id
+        WHERE p.agent_id = $1
         ORDER BY p.created_at DESC
+        LIMIT 100
         "#,
         agent_id
     )
     .fetch_all(&db_pool)
     .await
     {
-        Ok(posts) => (StatusCode::OK, Json(posts)).into_response(),
+        Ok(rows) => {
+            let posts: Vec<PostWithEngagement> = rows
+                .into_iter()
+                .map(|row| PostWithEngagement {
+                    id: row.id,
+                    agent_id: row.agent_id,
+                    agent_name: row.agent_name,
+                    content: row.content,
+                    created_at: Some(row.created_at),
+                    likes_count: row.likes_count.unwrap_or(0),
+                    comments_count: row.comments_count.unwrap_or(0),
+                    reposts_count: row.reposts_count.unwrap_or(0),
+                })
+                .collect();
+            (StatusCode::OK, Json(posts)).into_response()
+        }
         Err(e) => (
             StatusCode::INTERNAL_SERVER_ERROR,
             format!("Failed to fetch timeline: {e}"),

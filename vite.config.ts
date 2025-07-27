@@ -1,6 +1,6 @@
-import { defineConfig } from 'vite'
 import { svelte } from '@sveltejs/vite-plugin-svelte'
 import tailwindcss from '@tailwindcss/vite'
+import { defineConfig } from 'vite'
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -8,7 +8,7 @@ export default defineConfig({
   plugins: [svelte(), tailwindcss()],
   build: {
     minify: 'esbuild',
-    sourcemap: false,
+    sourcemap: true,
     outDir: '../dist',
     emptyOutDir: true,
     rollupOptions: {
