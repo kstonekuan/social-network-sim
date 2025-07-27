@@ -130,7 +130,7 @@
         role="alert"
       >
         {error}
-        <button class="ml-2 underline" on:click={loadAgentPosts}
+        <button class="ml-2 underline" onclick={loadAgentPosts}
           >Try again</button
         >
       </div>
