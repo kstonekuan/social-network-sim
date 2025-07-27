@@ -48,13 +48,10 @@ test:
     @echo "🧪 Running tests..."
     cd twitter-api-service && SQLX_OFFLINE=true cargo test
 
-# Database operations
-db-init:
-    @echo "📦 Initializing database with schema..."
-    psql "${DATABASE_URL?DATABASE_URL must be set}" -f twitter-api-service/schema.sql
+# Database operations (schema initialization handled by Docker)
 
 db-prepare:
-    @echo "💾 Preparing SQLx offline data..."
+    @echo "💾 Preparing SQLx offline data (requires Docker services running)..."
     cd twitter-api-service && DATABASE_URL="${DATABASE_URL?DATABASE_URL must be set}" cargo sqlx prepare
 
 # Docker operations
@@ -71,7 +68,7 @@ docker-rebuild:
     docker compose up --build -d
 
 # Development workflow
-dev: docker-up db-init check
+dev: docker-up check
     @echo "✅ Development environment ready!"
 
 
@@ -91,7 +88,6 @@ init:
     pnpm install
     just docker-up
     sleep 10
-    just db-init
     just db-prepare
     @echo "✅ Project initialized! Copy .env.example to .env and add your API keys."
 
@@ -149,8 +145,7 @@ help:
     @echo "  fix        - Auto-fix formatting and linting issues"
     @echo ""
     @echo "Database:"
-    @echo "  db-init    - Initialize database with schema"
-    @echo "  db-prepare - Generate SQLx offline data (auto-run with check)"
+    @echo "  db-prepare - Generate SQLx offline data (requires Docker services)"
     @echo ""
     @echo "Docker:"
     @echo "  docker-up  - Start Docker services"
@@ -158,10 +153,10 @@ help:
     @echo "  docker-rebuild - Rebuild Docker services"
     @echo ""
     @echo "Development:"
-    @echo "  dev        - Set up development environment"
-    @echo "  init       - Initialize project (first time)"
-    @echo "  run-init   - Run initializer service"
-    @echo "  run-sim    - Run simulator service"
+    @echo "  dev        - Set up development environment (Docker + checks)"
+    @echo "  init       - Initialize project (first time setup)"
+    @echo "  run-init   - Run AI agent initializer (requires Docker services)"
+    @echo "  run-sim    - Run simulation (requires Docker services + agents)"
     @echo "  clean      - Clean build artifacts"
     @echo ""
     @echo "Visualizer:"

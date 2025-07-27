@@ -33,10 +33,10 @@ The project is composed of several key components:
 
 Before you begin, ensure you have the following installed:
 
-*   [Docker](https://www.docker.com/get-started)
-*   [just](https://github.com/casey/just)
-*   [pnpm](https://pnpm.io/installation)
-*   [uv](https://github.com/astral-sh/uv) (Python package manager)
+*   [Docker](https://www.docker.com/get-started) - **Required** for all infrastructure (database, API)
+*   [just](https://github.com/casey/just) - **Recommended** for convenient command execution
+*   [uv](https://github.com/astral-sh/uv) - **Required** for Python simulation scripts
+*   [pnpm](https://pnpm.io/installation) - **Optional** for frontend development only
 
 ## Getting Started
 
@@ -53,30 +53,30 @@ Before you begin, ensure you have the following installed:
     ```
 
 3.  **Run the initialization script:**
-    This command will install all dependencies (Python and Node.js), start the Docker containers, and initialize the database schema.
+    This command will install dependencies, start Docker containers, and prepare the database.
     ```bash
     just init
     ```
-    *Note: This might take a few minutes on the first run.*
+    *Note: The database schema is automatically initialized by Docker. This might take a few minutes on the first run.*
 
 ## Development Workflow
 
 Once the initial setup is complete, you can use the following commands to run and manage the application.
 
-*   **Start all services:**
-    This will start the database and backend API in the background.
+*   **Start all infrastructure:**
+    This starts the PostgreSQL database and Rust API service with automatic schema initialization.
     ```bash
     just docker-up
     ```
 
-*   **Run the database initializer:**
-    This populates the database with initial users and influencers.
+*   **Run the AI agent initializer:**
+    This populates the database with AI agent profiles using the Gemini API.
     ```bash
     just run-init
     ```
 
 *   **Run the simulation:**
-    This starts the main simulation script, which will generate activity on the platform.
+    This starts the simulation with AI agents interacting on the platform.
     ```bash
     just run-sim
     ```
