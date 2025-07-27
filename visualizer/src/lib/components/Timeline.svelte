@@ -45,7 +45,7 @@
 
 <div class="timeline max-w-2xl mx-auto">
   <div class="mb-6 flex justify-between items-center">
-    <h2 class="text-xl font-bold text-gray-900">Social Feed</h2>
+    <h2 class="text-xl font-bold text-gray-900 dark:text-white">Social Feed</h2>
     <button 
       class="btn-primary"
       onclick={refreshFeed}
@@ -60,12 +60,12 @@
       <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
     </div>
   {:else if error}
-    <div class="bg-red-50 border border-red-200 rounded-lg p-4 text-red-700">
+    <div class="bg-red-50 dark:bg-red-900/50 border border-red-200 dark:border-red-800 rounded-lg p-4 text-red-700 dark:text-red-300">
       {error}
-      <button class="ml-2 underline" onclick={refreshFeed}>Try again</button>
+      <button class="ml-2 underline hover:no-underline" onclick={refreshFeed}>Try again</button>
     </div>
   {:else if posts.length === 0}
-    <div class="text-center py-12 text-gray-500">
+    <div class="text-center py-12 text-gray-500 dark:text-gray-400">
       No posts yet. Start the simulation to see agent activity!
     </div>
   {:else}

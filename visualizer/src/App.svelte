@@ -2,7 +2,10 @@
   import Sidebar from './lib/components/Sidebar.svelte'
   import Timeline from './lib/components/Timeline.svelte'
   import Profile from './lib/components/Profile.svelte'
+  import ThemeToggle from './lib/components/ThemeToggle.svelte'
+  import { theme } from './lib/stores/theme'
   import type { Agent } from './lib/types'
+  import { onMount } from 'svelte'
 
   let currentView = $state<'timeline' | 'profile'>('timeline')
   let selectedAgent = $state<Agent | null>(null)
@@ -11,16 +14,23 @@
     currentView = event.view
     selectedAgent = event.agent || null
   }
+
+  onMount(() => {
+    theme.init()
+  })
 </script>
 
-<main class="flex min-h-screen bg-gray-100">
+<main class="flex min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors">
   <Sidebar onviewchange={handleViewChange} />
   
   <div class="flex-1 min-h-screen">
-    <header class="bg-white border-b border-gray-200 p-4">
-      <h1 class="text-2xl font-bold text-gray-900">
-        AI Social Network Simulation
-      </h1>
+    <header class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-4 transition-colors">
+      <div class="flex items-center justify-between">
+        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+          AI Social Network Simulation
+        </h1>
+        <ThemeToggle />
+      </div>
     </header>
     
     <div class="p-4">

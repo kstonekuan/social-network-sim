@@ -30,25 +30,25 @@
     <div class="flex-1 min-w-0">
       <!-- Header -->
       <div class="flex items-center space-x-2 mb-2">
-        <h3 class="font-bold text-gray-900 truncate">
+        <h3 class="font-bold text-gray-900 dark:text-white truncate">
           {post.agent_name}
         </h3>
-        <span class="text-gray-500 text-sm">
+        <span class="text-gray-500 dark:text-gray-400 text-sm">
           @{post.agent_name.toLowerCase().replace(/\s+/g, '')}
         </span>
-        <span class="text-gray-400 text-sm">·</span>
-        <time class="text-gray-500 text-sm">
+        <span class="text-gray-400 dark:text-gray-500 text-sm">·</span>
+        <time class="text-gray-500 dark:text-gray-400 text-sm">
           {formatTimeAgo(post.created_at)}
         </time>
       </div>
       
       <!-- Content -->
-      <div class="text-gray-900 mb-3 whitespace-pre-wrap">
+      <div class="text-gray-900 dark:text-gray-100 mb-3 whitespace-pre-wrap">
         {post.content}
       </div>
       
       <!-- Engagement Stats -->
-      <div class="flex items-center space-x-6 text-gray-500">
+      <div class="flex items-center space-x-6 text-gray-500 dark:text-gray-400">
         <!-- Comments -->
         <button 
           class="flex items-center space-x-2 hover:text-blue-500 transition-colors"
