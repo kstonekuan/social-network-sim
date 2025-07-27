@@ -20,6 +20,8 @@ services:
     build:
       context: ./twitter-api-service
     env_file: .env
+    environment:
+      - DATABASE_URL=postgres://user:${POSTGRES_PASSWORD}@postgres:5432/x-twitter-sim
     ports:
       - '3000:3000'
     depends_on:
